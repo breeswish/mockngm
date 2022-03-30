@@ -5,11 +5,12 @@ A just-for-fun project that pretend to be a [ng-monitoring](https://github.com/p
 ## Usage
 
 ```shell
-go run main.go
+make
+bin/mockngm
 ```
 
 To specify different targets:
 
 ```shell
-go run main.go --targets tidb://127.0.0.1:10080,tikv://127.0.0.1:20180
+bin/mockngm --targets tidb://127.0.0.1:10080,tikv://127.0.0.1:20180
 ```

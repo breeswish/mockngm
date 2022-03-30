@@ -68,12 +68,21 @@ func (s *Scraper) scrapeTiDB() {
 	bo := newBackoffScrape(s.ctx, s.tlsConfig, s.component.Addr, s.component)
 	defer bo.close()
 
+	lastLog := time.Now()
+	lastSuppressed := 0
+
 	for {
 		record := bo.scrapeTiDBRecord()
 		if record == nil {
 			return
 		}
-		log.Info("Received Top SQL record", zap.Stringer("target", s.component))
+
+		lastSuppressed++
+		if time.Since(lastLog) > time.Second {
+			log.Info("Received Top SQL record", zap.Int("records", lastSuppressed), zap.Stringer("target", s.component))
+			lastLog = time.Now()
+			lastSuppressed = 0
+		}
 	}
 }
 
@@ -81,12 +90,21 @@ func (s *Scraper) scrapeTiKV() {
 	bo := newBackoffScrape(s.ctx, s.tlsConfig, s.component.Addr, s.component)
 	defer bo.close()
 
+	lastLog := time.Now()
+	lastSuppressed := 0
+
 	for {
 		record := bo.scrapeTiKVRecord()
 		if record == nil {
 			return
 		}
-		log.Info("Received Top SQL record", zap.Stringer("target", s.component))
+		
+		lastSuppressed++
+		if time.Since(lastLog) > time.Second {
+			log.Info("Received Top SQL record", zap.Int("records", lastSuppressed), zap.Stringer("target", s.component))
+			lastLog = time.Now()
+			lastSuppressed = 0
+		}
 	}
 }
 
